@@ -163,4 +163,22 @@ describe('middleware', function(){
       });
     });
   });
+
+  describe('send response', function(){
+    var app = express();
+    app.use(middleware(__dirname + '/fixtures', {
+      dest: tmpDest,
+      sendResponse: true
+    }));
+    // NOTE app.use(express.static(tmpDest));
+
+    it('should send the response back after written', function(done){
+      var expected = fs.readFileSync(__dirname + '/fixtures/simple-exp.css', 'utf8');
+      request(app)
+        .get('/simple.css')
+        .expect(200)
+        .expect('Content-Type', /css/)
+        .expect(expected, done);
+    });
+  });
 });
